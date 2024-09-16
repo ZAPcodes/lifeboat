@@ -1,0 +1,124 @@
+{% include 'partials/_header.html' %}
+{% block content %}
+    <div class="container" data-patient-id="{{ patient.id }}">
+        <h1>Patient Report: {{ patient.name }}</h1>
+        <p><strong>Ward Number:</strong> {{ patient.ward_number }}</p>
+        <p><strong>Bed Number:</strong> {{ patient.bed_number }}</p>
+        <p><strong>Doctor Assigned:</strong> {{ patient.doctor }}</p>
+        <p><strong>Illness:</strong> {{ patient.illness }}</p>
+
+        <h2>Health Metrics</h2>
+
+        <div class="chart-container">
+            <div id="heartRateChart"></div>
+        </div>
+        <div class="chart-container">
+            <div id="spo2Chart"></div>
+        </div>
+    </div>
+{% endblock %}
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        text-align: center;
+    }
+
+    p {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    .chart-container {
+        margin: 30px 0;
+    }
+
+    #heartRateChart, #spo2Chart {
+        width: 100%;
+        height: 400px;
+    }
+</style>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const patientContainer = document.querySelector('.container');
+        const patientId = patientContainer.getAttribute('data-patient-id');
+    
+        if (!patientId) {
+            console.error('No patient ID available!');
+            return;
+        }
+        
+        let heartRateTrace = {
+            x: [],
+            y: [],
+            mode: 'lines+markers',
+            name: 'Heart Rate',
+        };
+        let spo2Trace = {
+            x: [],
+            y: [],
+            mode: 'lines+markers',
+            name: 'SpO2',
+        };
+
+        let heartRateLayout = {
+            title: 'Heart Rate',
+            xaxis: { title: 'Time' },
+            yaxis: { title: 'Heart Rate (BPM)' },
+        };
+
+        let spo2Layout = {
+            title: 'SpO2',
+            xaxis: { title: 'Time' },
+            yaxis: { title: 'SpO2 (%)' },
+        };
+
+        Plotly.newPlot('heartRateChart', [heartRateTrace], heartRateLayout);
+        Plotly.newPlot('spo2Chart', [spo2Trace], spo2Layout);
+
+        function updateCharts() {
+            fetch(`/patient/${patientId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data.error) {
+                    const time = new Date(data.timestamp);
+
+                    Plotly.extendTraces('heartRateChart', {
+                        x: [[time]],
+                        y: [[data.heart_rate]],
+                    }, [0]);
+
+                    Plotly.extendTraces('spo2Chart', {
+                        x: [[time]],
+                        y: [[data.spo2]],
+                    }, [0]);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('heartRateChart').innerHTML = 'Error loading chart data';
+            });
+        }
+
+        // Update the charts every 5 seconds
+        setInterval(updateCharts, 5000);
+    });
+</script>

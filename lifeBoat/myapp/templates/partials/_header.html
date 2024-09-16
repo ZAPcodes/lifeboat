@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Theme Variables */
+        :root {
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --card-bg: #fff;
+            --button-bg: #333;
+            --button-text: #fff;
+            --button-hover-bg: #555;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1f1f1f;
+            --text-color: #f4f4f4;
+            --card-bg: #2b2b2b;
+            --button-bg: #f4f4f4;
+            --button-text: #333;
+            --button-hover-bg: #ccc;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-left {
+            justify-content: flex-start;
+        }
+
+        .navbar-right {
+            justify-content: flex-end;
+        }
+
+        .navbar li {
+            margin-right: 20px;
+            position: relative;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 10px;
+        }
+
+        .navbar a:hover {
+            color: #333;
+            background-color: #fff;
+            border-radius: 50%;
+            font-size: 20px;
+        }
+
+        .navbar .username a {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .username i {
+            font-size: 20px;
+            margin-left: 5px;
+        }
+
+        .theme-toggle {
+            margin: 0; /* Resetting margin */
+        }
+
+        #themeButton {
+            padding: 8px 16px; /* Slightly smaller padding for better alignment */
+            border: none;
+            border-radius: 5px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+        }
+
+        #themeButton:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <ul class="navbar-left">
+                <li class="username">
+                    <a href="#">{{ user }} <i class="fas fa-user"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-right">
+                <li id="Dashboard"><a href="#">Dashboard</a></li>
+                <li id="Settings"><a href="#">Settings</a></li>
+                <li class="theme-toggle">
+                    <button id="themeButton" onclick="toggleTheme()">Dark</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script>
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const themeButton = document.getElementById('themeButton');
+
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeButton.textContent = 'Dark';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeButton.textContent = 'Light';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme based on local storage or default to light
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const themeButton = document.getElementById('themeButton');
+            if (savedTheme === 'dark') {
+                themeButton.textContent = 'Light';
+            } else {
+                themeButton.textContent = 'Dark';
+            }
+        });
+    </script>
+</body>
+</html>

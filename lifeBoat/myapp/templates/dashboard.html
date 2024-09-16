@@ -1,0 +1,111 @@
+{% include 'partials/_header.html' %}
+
+{% block content %}
+    <h1>Patient Dashboard</h1>
+    
+    <div class="card-container">
+        {% for patient in patients %}
+        <!-- Pass patient ID to the redirect function -->
+        <div class="card {% if patient.heart_rate > 100 or patient.spo2 < 90 or patient.bp == 'high' %}warning{% endif %}" 
+            onclick="redirectToWebsite('{{ patient.patient_id }}')">       
+            <div class="card-body">
+                <h2>{{ patient.name }}</h2>
+                <p>Heart Rate: {{ patient.heart_rate }} bpm</p>
+                <p>SpO2: {{ patient.spo2 }}%</p>
+                <p>Blood Pressure: {{ patient.bp }}</p>
+                <p>Respiratory Rate: {{ patient.resp_rate }} breaths/min</p>
+                <p>Body Temperature: {{ patient.body_temp }} °F</p>
+                <p>Condition: <span class="{% if patient.condition == 'ok' %}good-condition{% else %}bad-condition{% endif %}">{{ patient.condition }}</span></p>
+                
+                <!-- Warning message if critical health indicators are present -->
+                {% if patient.heart_rate > 100 or patient.spo2 < 90 or patient.bp == 'high' %}
+                <div class="warning-message">
+                    ⚠️ Warning: Critical health condition detected!
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .card {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+        cursor: pointer;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Warning system */
+    .warning {
+        border: 2px solid red;
+        background-color: rgba(255, 0, 0, 0.1);
+    }
+
+    .warning-message {
+        margin-top: 10px;
+        color: red;
+        font-weight: bold;
+    }
+
+    /* Condition text styles */
+    .good-condition {
+        color: green;
+        font-weight: bold;
+    }
+
+    .bad-condition {
+        color: red;
+        font-weight: bold;
+    }
+
+    /* Light Theme Variables */
+    /* Define your light theme variables here, e.g. */
+     /* :root {
+        --background-color: #ffffff;
+        --text-color: #000000;
+        --card-bg: #f0f0f0;
+    } */
+
+    /* Dark Theme Variables */
+    /* Define your dark theme variables here, e.g. */
+    /* :root {
+        --background-color: #2c2c2c;
+        --text-color: #ffffff;
+        --card-bg: #3c3c3c;
+    } */
+</style>
+
+<script>
+    // Dynamically redirect to the patient details page
+    function redirectToWebsite(patient_id) {
+        window.location.href = 'patient/' + patient_id;
+    }
+</script>

@@ -1,0 +1,39 @@
+<!-- <form method="post">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+
+    <div id="doctor_form" style="display: none;">
+        {{ doctor_form.as_p }}
+    </div>
+
+    <div id="nurse_form" style="display: none;">
+        {{ nurse_form.as_p }}
+    </div>
+
+    <button type="submit">Register</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var professionSelect = document.getElementById("id_profession");
+        var doctorForm = document.getElementById("doctor_form");
+        var nurseForm = document.getElementById("nurse_form");
+
+        function toggleForms() {
+            if (professionSelect.value === "Doctor") {
+                doctorForm.style.display = "block";
+                nurseForm.style.display = "none";
+            } else if (professionSelect.value === "Nurse") {
+                doctorForm.style.display = "none";
+                nurseForm.style.display = "block";
+            } else {
+                doctorForm.style.display = "none";
+                nurseForm.style.display = "none";
+            }
+        }
+
+        professionSelect.addEventListener("change", toggleForms);
+        toggleForms();  // Call on page load to set the correct form
+    });
+</script> -->

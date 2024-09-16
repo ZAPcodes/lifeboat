@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="login-container">
+        <div class="login-box">
+            <h1>Login</h1>
+        
+            <form method="post">
+                {% csrf_token %}
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username"><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password"><br><br>
+                <input type="submit" value="Login">
+                {% if error %}
+                    <p style="color: red">{{ error }}</p>
+                {% endif %}
+            </form>
+        {% if messages %}
+        
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+    {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
